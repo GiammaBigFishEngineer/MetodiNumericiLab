@@ -16,7 +16,7 @@ def bisezione(fname,a,b,tol):
     v_xk = [] #vettore delle iterazione
     
     #finchè l'intervallo trovato è maggiore della tolleranza
-    while (b-a) > tol:
+    while abs(b-a) > tol:
          #calcolo il centro aggiungendo all'estremo iniziale l'ampiezza dell'intervallo
         xk = a+(b-a)/2
         v_xk.append(xk)
