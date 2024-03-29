@@ -11,7 +11,7 @@ def derivata(x,fs):
     #derivata simbolica
     dfs= sym.diff(fs,x,1)
     F=lambdify(x,fs,np) #funzione da simbolica ad usare numericamente
-    print(dfs)
+    print("Derivata in analisi: ",dfs)
     #Il risultato è simbolico, vogliamo lamdificare (trasformare) la funzione derivata trovata in formato numerico per essere usata con i numeri
     #Passo la variabile simbolica, la funzione simbolica, la libreria numpy per usare la derivata direttamente sui vettori
     return lambdify(x,dfs,np) #derivata prima usabile numericamente
