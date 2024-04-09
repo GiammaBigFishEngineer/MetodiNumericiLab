@@ -21,47 +21,29 @@ Jac = lambda x: np.array([
 ]) #matrice Jacobbiana con dfxi/xj
 """
 import numpy as np
-def newtonRaphson(fname, JacName, X0, tolx, tolf, NMAX):
-
-    Xk = np.array(X0)
-    errors = []
-    
-    for nit in range(NMAX):
-        F = fname(Xk)
-        J = JacName(Xk)
-        
-        # Calcolo dell'incremento usando la formula di Newton-Raphson
-        Xk_next = Xk - np.linalg.inv(J)@F
-        
-        # Calcolo dell'errore relativo tra due iterati successivi
-        error = np.linalg.norm(Xk_next - Xk) / np.linalg.norm(Xk)
-        errors.append(error)
-        
-        # Test di arresto sulla tolleranza dell'incremento
-        if error <= tolx:
-            break
-        
-        # Test di arresto sul residuo
-        if np.linalg.norm(F) <= tolf:
-            break
-        
-        Xk = Xk_next
-
-    print("\n soluzione:",Xk,"\n errore:",errors, "Iterazioni eseguite: ", nit + 1)
-    return Xk, errors, nit + 1
-
-
-"""
-VERSIONE NON FUNZIONANTE DELL'ALGORITMO, CAPIRE IL PERCHè
-
 def newtonRaphson(fname,Jacname,x0,tolx,tolf,nmax):
+    errors = []
+    it = 0
     
+    if np.linalg.det(Jacname(x0))==0:
+        print("jacobiano di x0 nullo")
+        return None,None,None
+    
+    #Effettuo la prima iterazione inizializzando x0=(xk) ed x1=(xk1)
     xk = np.array(x0)
     jac = Jacname(x0)
     fxk = fname(x0)
     xk1 = xk - np.linalg.inv(jac)@fxk
-
-    while it < nmax and np.linalg.norm(xk1 - xk) / np.linalg.norm(xk) <= tolx and np.linalg.norm(fname(xk)) <= tolf:
+    """
+    Soluzione per xk1 più veloce:
+    s = np.linalg.solve(matjac,fun(x0))
+    x1 = x0+s
+    fx1 = fun(x1)
+    """
+    
+    #Criteri di arresto nel ciclo while: il primo capisce se l'errore del valore iterato è sufficentemente piccolo.
+    while it < nmax and np.linalg.norm(xk1 - xk) / np.linalg.norm(xk) >= tolx and np.linalg.norm(fname(xk)) >= tolf:
+        #Ogni ciclo calcola il nuovo iterato xk1 
         xk = xk1
         jac = Jacname(xk)
         fxk = fname(xk)
@@ -71,13 +53,14 @@ def newtonRaphson(fname,Jacname,x0,tolx,tolf,nmax):
         errors.append(error)
     
 
-    if not np.linalg.norm(xk1 - xk) / np.linalg.norm(xk) <= tolx:
+    if not np.linalg.norm(xk1 - xk) / np.linalg.norm(xk) >= tolx:
         print("Arresto sulla tolleranza dell'incremento")
 
-    if not np.linalg.norm(fname(xk1) <= tolf):
+    if not np.linalg.norm(fname(xk) >= tolf):
         print("Arresto sulla tolleranza del residuo")
 
     
-    print("\n soluzione:",xk1,"\n errore:",errors, "Iterazioni eseguite: ", it)
+    print("\n soluzione: ",xk1,"\n errore: ",errors, "\n Iterazioni eseguite: ", it)
     return xk,errors,it
-"""
+
+
