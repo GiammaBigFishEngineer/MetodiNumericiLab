@@ -779,7 +779,7 @@ def SVDLS(A,b):
 
 def plagr(xnodi,j):
     """
-    Restituisce i coefficienti del j-esimo pol di
+    Restituisce i coefficienti del k-esimo pol di
     Lagrange associato ai punti del vettore xnodi
     """
     xzeri=np.zeros_like(xnodi)
@@ -813,5 +813,49 @@ def InterpL(x, y, xx):
      L=np.zeros((m,n))
      for j in range(n):
         p=plagr(x,j)
-  
+        L[:,j]=np.polyval(p,xx)
+    
      return L@y
+
+
+"""
+Analisi di matrice
+
+m = 400 
+n = 400
+nz = np.count_nonzero(A)/(n*m)
+perc_nz = nz * 100
+print("Percentuale elementi diversi da zero", perc_nz)
+#sparsa se hai più di due terzi di valori uguali a zero
+
+plt.spy(A)
+#A è di grandi dimensioni, poco densa, sparsa, ben condizionata, inoltre dalla stampa risulta essere simmetrica.
+K = npl.cond(A)
+#ben condizionata se K è maggiore di 10^n n = 0,1,2,3
+#Decico quindi di usare Gauss Siedel e Metodo di discesa del Gradiente congiunto
+
+
+nz = np.count_nonzero(A)/(n*m)
+perc_nz = nz * 100
+if np.all(A == A.T) == 0:
+    print("Matrice non simmetrica")
+else:
+    print("Matrice è simmetrica")
+    autovalori = npl.eigvals(A)
+    flag_dp = np.all(autovalori>0)
+    print("Matrice definita positiva", flag_dp)
+
+if K < 10**3:
+    print("matrice ben condizionata")
+else:
+    print("Matrice mal condizionata")
+
+if perc_nz > 66:
+    print("Matrice sparsa")
+else:
+    print("Matrice non sparsa")
+
+#Iterato iniziale uguale a zero nella dimensione di b
+x0 = np.zeros_like(b)
+somma_righe = [np.sum(np.abs(row)) for row in A]
+"""
